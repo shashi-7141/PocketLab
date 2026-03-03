@@ -1,0 +1,52 @@
+{% extends 'logs/base.html' %}
+
+{% block title %}{{ log.title }}{% endblock %}
+
+{% block content %}
+
+<div class="detail-wrapper">
+
+    <div class="detail-card">
+
+        <!-- Header -->
+        <div class="detail-header">
+            <h2>{{ log.title }}</h2>
+            <span class="detail-date">📅 {{ log.date }}</span>
+        </div>
+
+        <!-- Sections -->
+        <div class="detail-section">
+            <h3>Procedure Details</h3>
+            <p>{{ log.details }}</p>
+        </div>
+
+        <div class="detail-section">
+            <h3> Observations</h3>
+            <p>{{ log.observations }}</p>
+        </div>
+
+        <div class="detail-section">
+            <h3> Results & Conclusions</h3>
+            <p>{{ log.results }}</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="detail-actions">
+            <a href="{% url 'logs:update' log.pk %}" class="btn btn-primary">
+                ✏️ Edit
+            </a>
+
+            <a href="{% url 'logs:delete' log.pk %}" class="btn btn-danger">
+                🗑 Delete
+            </a>
+
+            <a href="{% url 'logs:list' %}" class="btn btn-outline">
+                ← Back
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

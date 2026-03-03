@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PocketLab - Science Experiment Logger{% endblock %}</title>
+
+    {% load static %}
+
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="{% static 'logs/style.css' %}">
+    <link rel="stylesheet" href="{% static 'logs/form.css' %}">
+
+    <!-- Page Specific CSS -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- ===========================
+         NAVBAR
+    ============================ -->
+    <header class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <h1 class="logo">🧪 PocketLab</h1>
+                <p class="tagline">Science Experiment Logger</p>
+            </div>
+
+            <nav class="navbar-menu">
+                <a href="{% url 'logs:list' %}" class="nav-link">My Experiments</a>
+            </nav>
+        </div>
+    </header>
+
+
+    <!-- ===========================
+         MAIN CONTENT
+    ============================ -->
+    <main class="container">
+
+        <!-- Django Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                    <button type="button" class="alert-close">&times;</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+
+    <!-- ===========================
+         FOOTER
+    ============================ -->
+    <footer class="footer">
+        <p>&copy; 2026 PocketLab - Science Experiment Logger.</p>
+    </footer>
+
+    <!-- Close Alert Button Script -->
+    <script>
+        document.querySelectorAll('.alert-close').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.parentElement.remove();
+            });
+        });
+    </script>
+
+</body>
+</html>

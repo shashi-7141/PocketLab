@@ -1,0 +1,36 @@
+{% extends 'logs/base.html' %}
+
+{% block title %}Experiment Logs{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>All Experiments</h2><br>
+    <a href="{% url 'logs:create' %}" class="btn btn-primary">
+        + Add New Experiment
+    </a>
+</div>
+
+{% if logs %}
+    <div class="experiment-grid">
+        {% for log in logs %}
+            <div class="experiment-card">
+                <h3>{{ log.title }}</h3>
+                <p class="experiment-date">📅 {{ log.date }}</p>
+                <a href="{% url 'logs:detail' log.pk %}" class="btn btn-outline">
+                    View Details →
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <h3>No Experiments Yet 🧪</h3>
+        <p>Start logging your first scientific experiment.</p>
+        <a href="{% url 'logs:create' %}" class="btn btn-primary">
+            Create Experiment
+        </a>
+    </div>
+{% endif %}
+
+{% endblock %}

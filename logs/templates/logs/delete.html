@@ -1,0 +1,39 @@
+{% extends 'logs/base.html' %}
+
+{% block title %}Delete Experiment{% endblock %}
+
+{% block content %}
+
+<div class="delete-wrapper">
+
+    <div class="delete-card">
+
+        <div class="delete-header">
+            <h2>Delete Experiment</h2>
+            <p class="delete-warning">
+                This action cannot be undone.
+            </p>
+        </div>
+
+        <div class="delete-body">
+            <p>Are you sure you want to delete:</p>
+            <h3 class="delete-title">"{{ log.title }}"</h3>
+        </div>
+
+        <form method="post" class="delete-actions">
+            {% csrf_token %}
+
+            <button type="submit" class="btn btn-danger">
+                Yes, Delete
+            </button>
+
+            <a href="{% url 'logs:detail' log.pk %}" class="btn btn-outline">
+                Cancel
+            </a>
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
