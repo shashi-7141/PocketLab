@@ -1,6 +1,10 @@
 {% extends 'logs/base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'logs/form.css' %}">
+{% endblock %}
+
 {% block title %}
     {% if log %}Edit Experiment{% else %}Add New Experiment{% endif %}
 {% endblock %}
@@ -23,7 +27,6 @@
         <form method="post" class="experiment-form">
             {% csrf_token %}
 
-            <!-- Title -->
             <div class="form-group">
                 <label>Experiment Title</label>
                 <input type="text"
@@ -32,7 +35,6 @@
                        required>
             </div>
 
-            <!-- Date -->
             <div class="form-group">
                 <label>Date Conducted</label>
                 <input type="date"
@@ -41,25 +43,21 @@
                        required>
             </div>
 
-            <!-- Details -->
             <div class="form-group">
                 <label>Procedure Details</label>
                 <textarea name="details" rows="4" required>{{ log.details|default:'' }}</textarea>
             </div>
 
-            <!-- Observations -->
             <div class="form-group">
                 <label>Observations</label>
                 <textarea name="observations" rows="4" required>{{ log.observations|default:'' }}</textarea>
             </div>
 
-            <!-- Results -->
             <div class="form-group">
                 <label>Results & Conclusions</label>
                 <textarea name="results" rows="4" required>{{ log.results|default:'' }}</textarea>
             </div>
 
-            <!-- Buttons -->
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
                     {% if log %}Update Experiment{% else %}Save Experiment{% endif %}

@@ -1,4 +1,9 @@
 {% extends 'logs/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'logs/css/delete.css' %}">
+{% endblock %}
 
 {% block title %}Delete Experiment{% endblock %}
 
@@ -9,7 +14,7 @@
     <div class="delete-card">
 
         <div class="delete-header">
-            <h2>Delete Experiment</h2>
+            <h2 class="delete-title-top">Delete Experiment</h2>
             <p class="delete-warning">
                 This action cannot be undone.
             </p>

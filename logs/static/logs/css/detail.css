@@ -1,0 +1,82 @@
+/* ===========================
+   DETAIL PAGE
+=========================== */
+
+.detail-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.detail-card {
+    background: var(--background-white);
+    max-width: 800px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+    padding: 30px;
+}
+
+/* Header */
+
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.detail-title h2 {
+    font-size: 26px;
+    margin-bottom: 4px;
+}
+
+.detail-date {
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+.detail-actions-top {
+    display: flex;
+    gap: 10px;
+}
+
+/* Content */
+
+.detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+
+}
+
+.detail-section {
+    background: var(--background-light);
+    padding: 20px;
+    border-radius: 8px;
+    transition: 0.25s ease;
+}
+
+.detail-section:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.detail-section h3 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.detail-section p {
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+/* Footer */
+
+.detail-footer {
+    margin-top: 30px;
+    text-align: center;
+}

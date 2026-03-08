@@ -1,52 +1,56 @@
 {% extends 'logs/base.html' %}
+{% load static %}
 
 {% block title %}{{ log.title }}{% endblock %}
 
 {% block content %}
 
-<div class="detail-wrapper">
+<section class="detail-wrapper">
 
     <div class="detail-card">
 
-        <!-- Header -->
+        <!-- HEADER -->
         <div class="detail-header">
-            <h2>{{ log.title }}</h2>
-            <span class="detail-date">📅 {{ log.date }}</span>
+            <div class="detail-title">
+                <h2>{{ log.title }}</h2>
+                <span class="detail-date">📅 {{ log.date }}</span>
+            </div>
+
+            <div class="detail-actions-top">
+                <a href="{% url 'logs:update' log.pk %}" class="btn btn-primary">✏️ Edit</a>
+                <a href="{% url 'logs:delete' log.pk %}" class="btn btn-danger">🗑 Delete</a>
+            </div>
         </div>
 
-        <!-- Sections -->
-        <div class="detail-section">
-            <h3>Procedure Details</h3>
-            <p>{{ log.details }}</p>
+        <!-- CONTENT SECTIONS -->
+        <div class="detail-content">
+
+            <div class="detail-section">
+                <h3>🔬 Procedure Details</h3>
+                <p>{{ log.details }}</p>
+            </div>
+
+            <div class="detail-section">
+                <h3>👀 Observations</h3>
+                <p>{{ log.observations }}</p>
+            </div>
+
+            <div class="detail-section">
+                <h3>📊 Results & Conclusions</h3>
+                <p>{{ log.results }}</p>
+            </div>
+
         </div>
 
-        <div class="detail-section">
-            <h3> Observations</h3>
-            <p>{{ log.observations }}</p>
-        </div>
-
-        <div class="detail-section">
-            <h3> Results & Conclusions</h3>
-            <p>{{ log.results }}</p>
-        </div>
-
-        <!-- Actions -->
-        <div class="detail-actions">
-            <a href="{% url 'logs:update' log.pk %}" class="btn btn-primary">
-                ✏️ Edit
-            </a>
-
-            <a href="{% url 'logs:delete' log.pk %}" class="btn btn-danger">
-                🗑 Delete
-            </a>
-
+        <!-- FOOTER ACTION -->
+        <div class="detail-footer">
             <a href="{% url 'logs:list' %}" class="btn btn-outline">
-                ← Back
+                ← Back to Experiments
             </a>
         </div>
 
     </div>
 
-</div>
+</section>
 
 {% endblock %}
