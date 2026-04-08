@@ -28,16 +28,19 @@ PocketLab is a modern Django-based web application that allows users to log, man
 ## 📸 Screenshots
 
 ### 📋 Experiment Dashboard
-![Dashboard](assets/Dashboard.png)
+![Dashboard](assets/home.png)
 
 ### ➕ Add Experiment Form
-![Form](assets/Form.png)
+![Form](assets/addForm.png)
+
+### ➕ edit Experiment Form
+![Form](assets/editForm.png)
 
 ### 🔍 Experiment Detail View
-![Detail](assets/Detail.png)
+![Detail](assets/view.png)
 
 ### ⚠️ Delete Confirmation
-![Delete](assets/Delete.png)
+![Delete](assets/deleteExp.png)
 
 ---
 
