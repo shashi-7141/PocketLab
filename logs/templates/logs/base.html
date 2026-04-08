@@ -9,15 +9,20 @@
     {% load static %}
 
     <!-- Global CSS -->
-    <link rel="stylesheet" href="{% static 'logs/form.css' %}">
     <link rel="stylesheet" href="{% static 'logs/style.css' %}">
-    <link rel="stylesheet" href="{% static 'logs/css/detail.css' %}">
-    <link rel="stylesheet" href="{% static 'logs/css/delete.css' %}">
-
+    
     <!-- Page Specific CSS -->
     {% block extra_css %}{% endblock %}
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+
+    <!-- ===========================
+         MOBILE MENU OVERLAY
+    ============================ -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
     <!-- ===========================
          NAVBAR
@@ -25,12 +30,32 @@
     <header class="navbar">
         <div class="container">
             <div class="navbar-brand">
-                <h1 class="logo">🧪 PocketLab</h1>
-                <p class="tagline">Science Experiment Logger</p>
+                <div class="logo-wrapper">
+                    <i class="fas fa-flask logo-icon"></i>
+                    <div class="logo-text">
+                        <h1 class="logo">PocketLab</h1>
+                        <p class="tagline">Science Experiment Logger</p>
+                    </div>
+                </div>
             </div>
 
-            <nav class="navbar-menu">
-                <a href="{% url 'logs:list' %}" class="nav-link">My Experiments</a>
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Navigation Menu -->
+            <nav class="navbar-menu" id="navbarMenu">
+                <a href="{% url 'logs:list' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>My Experiments</span>
+                </a>
+                <a href="{% url 'logs:create' %}" class="nav-link nav-link-cta">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>New Experiment</span>
+                </a>
             </nav>
         </div>
     </header>
@@ -39,20 +64,39 @@
     <!-- ===========================
          MAIN CONTENT
     ============================ -->
-    <main class="container">
+    <main class="main-content">
 
         <!-- Django Messages -->
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                    <button type="button" class="alert-close">&times;</button>
-                </div>
-            {% endfor %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        <div class="alert-icon">
+                            {% if message.tags == 'success' %}
+                                <i class="fas fa-check-circle"></i>
+                            {% elif message.tags == 'error' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% elif message.tags == 'warning' %}
+                                <i class="fas fa-exclamation-triangle"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="alert-content">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="alert-close" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
 
-        {% block content %}
-        {% endblock %}
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
     </main>
 
 
@@ -60,17 +104,80 @@
          FOOTER
     ============================ -->
     <footer class="footer">
-        <p>&copy; 2026 PocketLab - Science Experiment Logger.</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-flask"></i>
+                    <span>PocketLab</span>
+                </div>
+                <p class="footer-text">&copy; 2026 PocketLab - Science Experiment Logger. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">About</a>
+                    <a href="#" class="footer-link">Help</a>
+                    <a href="#" class="footer-link">Privacy</a>
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <!-- Close Alert Button Script -->
+    <!-- Scripts -->
     <script>
+        // Alert Close Functionality
         document.querySelectorAll('.alert-close').forEach(btn => {
             btn.addEventListener('click', function() {
-                this.parentElement.remove();
+                const alert = this.closest('.alert');
+                alert.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => alert.remove(), 300);
+            });
+        });
+
+        // Auto-dismiss alerts after 5 seconds
+        document.querySelectorAll('.alert').forEach(alert => {
+            setTimeout(() => {
+                if (alert.parentElement) {
+                    alert.style.animation = 'slideOutRight 0.3s ease-out';
+                    setTimeout(() => alert.remove(), 300);
+                }
+            }, 5000);
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navbarMenu = document.getElementById('navbarMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navbarMenu.classList.toggle('active');
+                mobileMenuOverlay.classList.toggle('active');
+                document.body.classList.toggle('menu-open');
+            });
+
+            mobileMenuOverlay.addEventListener('click', function() {
+                mobileMenuToggle.classList.remove('active');
+                navbarMenu.classList.remove('active');
+                this.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            });
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
             });
         });
     </script>
+
+    {% block extra_js %}{% endblock %}
 
 </body>
 </html>

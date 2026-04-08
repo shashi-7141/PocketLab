@@ -11,14 +11,30 @@
 
         <!-- HEADER -->
         <div class="detail-header">
-            <div class="detail-title">
-                <h2>{{ log.title }}</h2>
-                <span class="detail-date">📅 {{ log.date }}</span>
+            <div class="detail-title-section">
+                <div class="detail-icon">
+                    <i class="fas fa-flask-vial"></i>
+                </div>
+                <div class="detail-title-content">
+                    <h2 class="detail-title">{{ log.title }}</h2>
+                    <div class="detail-meta">
+                        <span class="detail-date">
+                            <i class="fas fa-calendar-check"></i>
+                            {{ log.date|date:"F d, Y" }}
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <div class="detail-actions-top">
-                <a href="{% url 'logs:update' log.pk %}" class="btn btn-primary">✏️ Edit</a>
-                <a href="{% url 'logs:delete' log.pk %}" class="btn btn-danger">🗑 Delete</a>
+                <a href="{% url 'logs:update' log.pk %}" class="btn btn-secondary btn-icon">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit</span>
+                </a>
+                <a href="{% url 'logs:delete' log.pk %}" class="btn btn-danger btn-icon">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Delete</span>
+                </a>
             </div>
         </div>
 
@@ -26,31 +42,94 @@
         <div class="detail-content">
 
             <div class="detail-section">
-                <h3>🔬 Procedure Details</h3>
-                <p>{{ log.details }}</p>
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-list-check"></i>
+                    </div>
+                    <h3 class="section-title">Procedure Details</h3>
+                </div>
+                <div class="section-content">
+                    <p>{{ log.details }}</p>
+                </div>
             </div>
 
             <div class="detail-section">
-                <h3>👀 Observations</h3>
-                <p>{{ log.observations }}</p>
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="section-title">Observations</h3>
+                </div>
+                <div class="section-content">
+                    <p>{{ log.observations }}</p>
+                </div>
             </div>
 
             <div class="detail-section">
-                <h3>📊 Results & Conclusions</h3>
-                <p>{{ log.results }}</p>
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="section-title">Results & Conclusions</h3>
+                </div>
+                <div class="section-content">
+                    <p>{{ log.results }}</p>
+                </div>
             </div>
 
         </div>
 
         <!-- FOOTER ACTION -->
         <div class="detail-footer">
-            <a href="{% url 'logs:list' %}" class="btn btn-outline">
-                ← Back to Experiments
+            <a href="{% url 'logs:list' %}" class="btn btn-outline btn-icon">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Experiments</span>
             </a>
+            <div class="detail-footer-actions">
+                <button class="btn btn-icon btn-share" onclick="shareExperiment()">
+                    <i class="fas fa-share-alt"></i>
+                    <span>Share</span>
+                </button>
+                <button class="btn btn-icon btn-print" onclick="window.print()">
+                    <i class="fas fa-print"></i>
+                    <span>Print</span>
+                </button>
+            </div>
         </div>
 
     </div>
 
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function shareExperiment() {
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ log.title }}',
+                text: 'Check out my experiment: {{ log.title }}',
+                url: window.location.href
+            }).catch(err => console.log('Error sharing:', err));
+        } else {
+            // Fallback: copy to clipboard
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Link copied to clipboard!');
+            });
+        }
+    }
+
+    // Add smooth reveal animation on load
+    document.addEventListener('DOMContentLoaded', function() {
+        const sections = document.querySelectorAll('.detail-section');
+        sections.forEach((section, index) => {
+            setTimeout(() => {
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+    });
+</script>
 {% endblock %}

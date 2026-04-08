@@ -1,10 +1,6 @@
 {% extends 'logs/base.html' %}
 {% load static %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'logs/form.css' %}">
-{% endblock %}
-
 {% block title %}
     {% if log %}Edit Experiment{% else %}Add New Experiment{% endif %}
 {% endblock %}
@@ -16,55 +12,116 @@
     <div class="form-card">
 
         <div class="form-header">
-            <h2>
-                {% if log %}Edit Experiment{% else %}Add New Experiment{% endif %}
-            </h2>
-            <p class="form-subtitle">
-                Record your scientific observations clearly and professionally.
+            <div class="form-icon">
+                {% if log %}
+                    <i class="fas fa-edit"></i>
+                {% else %}
+                    <i class="fas fa-plus-circle"></i>
+                {% endif %}
+            </div>
+            <div class="form-header-content">
+                <h2 class="form-title">
+                    {% if log %}Edit Experiment{% else %}Add New Experiment{% endif %}
+                </h2>
+                <p class="form-subtitle">
+                    Record your scientific observations clearly and professionally.
+                </p>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="form-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text">
+                <span id="progressPercent">0</span>% Complete
             </p>
         </div>
 
-        <form method="post" class="experiment-form">
+        <form method="post" class="experiment-form" id="experimentForm">
             {% csrf_token %}
 
             <div class="form-group">
-                <label>Experiment Title</label>
+                <label class="form-label">
+                    <i class="fas fa-heading"></i>
+                    Experiment Title
+                    <span class="required">*</span>
+                </label>
                 <input type="text"
                        name="title"
+                       class="form-input"
+                       placeholder="e.g., Effect of Temperature on Plant Growth"
                        value="{{ log.title|default:'' }}"
+                       maxlength="200"
                        required>
+                <span class="char-count"><span id="titleCount">0</span>/200</span>
             </div>
 
             <div class="form-group">
-                <label>Date Conducted</label>
+                <label class="form-label">
+                    <i class="fas fa-calendar"></i>
+                    Date Conducted
+                    <span class="required">*</span>
+                </label>
                 <input type="date"
                        name="date"
+                       class="form-input"
                        value="{{ log.date|date:'Y-m-d' }}"
                        required>
             </div>
 
             <div class="form-group">
-                <label>Procedure Details</label>
-                <textarea name="details" rows="4" required>{{ log.details|default:'' }}</textarea>
+                <label class="form-label">
+                    <i class="fas fa-list-ol"></i>
+                    Procedure Details
+                    <span class="required">*</span>
+                </label>
+                <textarea name="details" 
+                          class="form-textarea" 
+                          rows="6" 
+                          placeholder="Describe the step-by-step procedure you followed in the experiment..."
+                          required>{{ log.details|default:'' }}</textarea>
+                <span class="helper-text">Describe the methods and materials used</span>
             </div>
 
             <div class="form-group">
-                <label>Observations</label>
-                <textarea name="observations" rows="4" required>{{ log.observations|default:'' }}</textarea>
+                <label class="form-label">
+                    <i class="fas fa-eye"></i>
+                    Observations
+                    <span class="required">*</span>
+                </label>
+                <textarea name="observations" 
+                          class="form-textarea" 
+                          rows="6" 
+                          placeholder="Record what you observed during the experiment..."
+                          required>{{ log.observations|default:'' }}</textarea>
+                <span class="helper-text">Document what you saw, measured, or noticed</span>
             </div>
 
             <div class="form-group">
-                <label>Results & Conclusions</label>
-                <textarea name="results" rows="4" required>{{ log.results|default:'' }}</textarea>
+                <label class="form-label">
+                    <i class="fas fa-chart-bar"></i>
+                    Results & Conclusions
+                    <span class="required">*</span>
+                </label>
+                <textarea name="results" 
+                          class="form-textarea" 
+                          rows="6" 
+                          placeholder="Summarize your findings and conclusions..."
+                          required>{{ log.results|default:'' }}</textarea>
+                <span class="helper-text">Analyze your data and draw conclusions</span>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    {% if log %}Update Experiment{% else %}Save Experiment{% endif %}
+                <button type="submit" class="btn btn-primary btn-lg btn-icon">
+                    <i class="fas fa-save"></i>
+                    <span>{% if log %}Update Experiment{% else %}Save Experiment{% endif %}</span>
                 </button>
 
-                <a href="{% url 'logs:list' %}" class="btn btn-outline">
-                    Cancel
+                <a href="{% url 'logs:list' %}" class="btn btn-outline btn-lg btn-icon">
+                    <i class="fas fa-times"></i>
+                    <span>Cancel</span>
                 </a>
             </div>
 
@@ -74,4 +131,97 @@
 
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation and progress tracking
+    const form = document.getElementById('experimentForm');
+    const inputs = form.querySelectorAll('input[required], textarea[required]');
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
+
+    // Character counter for title
+    const titleInput = document.querySelector('input[name="title"]');
+    const titleCount = document.getElementById('titleCount');
+    
+    if (titleInput) {
+        titleCount.textContent = titleInput.value.length;
+        titleInput.addEventListener('input', function() {
+            titleCount.textContent = this.value.length;
+        });
+    }
+
+    // Update progress
+    function updateProgress() {
+        let filledCount = 0;
+        inputs.forEach(input => {
+            if (input.value.trim() !== '') {
+                filledCount++;
+            }
+        });
+        
+        const progress = Math.round((filledCount / inputs.length) * 100);
+        progressFill.style.width = progress + '%';
+        progressPercent.textContent = progress;
+    }
+
+    // Add event listeners
+    inputs.forEach(input => {
+        input.addEventListener('input', updateProgress);
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.classList.add('error');
+            } else {
+                this.classList.remove('error');
+            }
+        });
+    });
+
+    // Initial progress calculation
+    updateProgress();
+
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (input.value.trim() === '') {
+                input.classList.add('error');
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+            
+            // Focus first empty field
+            const firstEmpty = Array.from(inputs).find(input => input.value.trim() === '');
+            if (firstEmpty) {
+                firstEmpty.focus();
+                firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    // Auto-grow textareas
+    document.querySelectorAll('.form-textarea').forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    });
+
+    // Add animation on load
+    document.addEventListener('DOMContentLoaded', function() {
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach((group, index) => {
+            setTimeout(() => {
+                group.style.opacity = '1';
+                group.style.transform = 'translateY(0)';
+            }, 50 * index);
+        });
+    });
+</script>
 {% endblock %}

@@ -1,10 +1,6 @@
 {% extends 'logs/base.html' %}
 {% load static %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'logs/css/delete.css' %}">
-{% endblock %}
-
 {% block title %}Delete Experiment{% endblock %}
 
 {% block content %}
@@ -13,27 +9,45 @@
 
     <div class="delete-card">
 
+        <div class="delete-icon-wrapper">
+            <div class="delete-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+        </div>
+
         <div class="delete-header">
-            <h2 class="delete-title-top">Delete Experiment</h2>
+            <h2 class="delete-title">Delete Experiment?</h2>
             <p class="delete-warning">
-                This action cannot be undone.
+                <i class="fas fa-info-circle"></i>
+                This action cannot be undone. All data will be permanently removed.
             </p>
         </div>
 
         <div class="delete-body">
-            <p>Are you sure you want to delete:</p>
-            <h3 class="delete-title">"{{ log.title }}"</h3>
+            <div class="experiment-preview">
+                <div class="preview-label">You are about to delete:</div>
+                <div class="preview-title">
+                    <i class="fas fa-flask"></i>
+                    <span>"{{ log.title }}"</span>
+                </div>
+                <div class="preview-meta">
+                    <i class="fas fa-calendar"></i>
+                    Conducted on {{ log.date|date:"F d, Y" }}
+                </div>
+            </div>
         </div>
 
-        <form method="post" class="delete-actions">
+        <form method="post" class="delete-actions" id="deleteForm">
             {% csrf_token %}
 
-            <button type="submit" class="btn btn-danger">
-                Yes, Delete
+            <button type="submit" class="btn btn-danger btn-lg btn-icon" id="deleteBtn">
+                <i class="fas fa-trash-alt"></i>
+                <span>Yes, Delete Permanently</span>
             </button>
 
-            <a href="{% url 'logs:detail' log.pk %}" class="btn btn-outline">
-                Cancel
+            <a href="{% url 'logs:detail' log.pk %}" class="btn btn-outline btn-lg btn-icon">
+                <i class="fas fa-arrow-left"></i>
+                <span>Cancel & Go Back</span>
             </a>
         </form>
 
@@ -41,4 +55,39 @@
 
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add confirmation before deletion
+    const deleteForm = document.getElementById('deleteForm');
+    const deleteBtn = document.getElementById('deleteBtn');
+    let confirmCount = 0;
+
+    deleteBtn.addEventListener('click', function(e) {
+        if (confirmCount === 0) {
+            e.preventDefault();
+            confirmCount++;
+            
+            // Change button appearance
+            this.classList.add('btn-confirm');
+            this.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>Click Again to Confirm</span>';
+            
+            // Reset after 3 seconds
+            setTimeout(() => {
+                confirmCount = 0;
+                deleteBtn.classList.remove('btn-confirm');
+                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i><span>Yes, Delete Permanently</span>';
+            }, 3000);
+        }
+    });
+
+    // Add shake animation to card on load
+    document.addEventListener('DOMContentLoaded', function() {
+        const card = document.querySelector('.delete-card');
+        setTimeout(() => {
+            card.style.animation = 'none';
+        }, 600);
+    });
+</script>
 {% endblock %}
